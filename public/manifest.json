@@ -1,0 +1,16 @@
+{
+    "name": "GitHub Profile Analyzer",
+    "short_name": "GH Analyzer",
+    "description": "Developer Score & GitHub profile deep dive",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#030712",
+    "theme_color": "#8b5cf6",
+    "icons": [
+        {
+            "src": "/favicon.ico",
+            "sizes": "any",
+            "type": "image/x-icon"
+        }
+    ]
+}
