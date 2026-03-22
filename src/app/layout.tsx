@@ -24,6 +24,9 @@ export const metadata: Metadata = {
     description: "Developer Score™ & deep GitHub profile insights",
   },
   manifest: "/manifest.json",
+};
+
+export const viewport = {
   themeColor: "#8b5cf6",
 };
 
