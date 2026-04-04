@@ -24,6 +24,7 @@ const nextConfig = {
             },
         ];
     },
+    transpilePackages: ["mermaid"],
 };
 
 module.exports = nextConfig;

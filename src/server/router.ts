@@ -3,7 +3,8 @@ import { z } from "zod";
 import superjson from "superjson";
 import { fetchCompleteProfile } from "@/lib/github";
 import { calculateDeveloperScore } from "@/lib/scoring";
-import type { ProfileAnalysis } from "@/types";
+import { analyzeRepository } from "@/lib/repo-analysis";
+import type { ProfileAnalysis, RepoAnalysis } from "@/types";
 
 const t = initTRPC.create({
     transformer: superjson,
@@ -19,11 +20,7 @@ export const appRouter = router({
                 username: z
                     .string()
                     .min(1, "Username required")
-                    .max(39, "Username too long")
-                    .regex(
-                        /^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}$/,
-                        "Invalid GitHub username"
-                    ),
+                    .max(39, "Username too long"),
             })
         )
         .query(async ({ input }): Promise<ProfileAnalysis> => {
@@ -116,6 +113,46 @@ export const appRouter = router({
             ]);
 
             return { left, right };
+        }),
+
+    analyzeRepo: publicProcedure
+        .input(
+            z.object({
+                owner: z.string().min(1).max(39),
+                repo: z.string().min(1).max(100),
+            })
+        )
+        .query(async ({ input }): Promise<RepoAnalysis> => {
+            try {
+                return await analyzeRepository(input.owner, input.repo);
+            } catch (err) {
+                console.error("❌ analyzeRepo raw error:", err);
+                console.error("Error type:", typeof err, err instanceof Error);
+
+                if (err instanceof Error) {
+                    if (err.message === "REPO_NOT_FOUND") {
+                        throw new TRPCError({
+                            code: "NOT_FOUND",
+                            message: `Repository "${input.owner}/${input.repo}" not found.`,
+                        });
+                    }
+                    if (err.message === "RATE_LIMITED") {
+                        throw new TRPCError({
+                            code: "TOO_MANY_REQUESTS",
+                            message:
+                                "GitHub API rate limit reached. Please add a GITHUB_TOKEN or try again later.",
+                        });
+                    }
+                    throw new TRPCError({
+                        code: "INTERNAL_SERVER_ERROR",
+                        message: `Failed to analyze repository: ${err.message}`,
+                    });
+                }
+                throw new TRPCError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: `Failed to analyze repository. Raw error: ${String(err)}`,
+                });
+            }
         }),
 });
 

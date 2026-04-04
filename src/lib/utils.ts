@@ -55,6 +55,17 @@ export function parseGitHubUrl(input: string): string | null {
     return null;
 }
 
+export function parseGitHubRepoUrl(input: string): { owner: string; repo: string } | null {
+    const cleaned = input.trim();
+    const urlMatch = cleaned.match(/^(?:https?:\/\/)?(?:www\.)?github\.com\/([^\/]+)\/([^\/]+)\/?$/);
+    if (urlMatch) return { owner: urlMatch[1].replace('.git', ''), repo: urlMatch[2].replace('.git', '') };
+
+    const plainMatch = cleaned.match(/^([^\/]+)\/([^\/]+)$/);
+    if (plainMatch) return { owner: plainMatch[1].replace('.git', ''), repo: plainMatch[2].replace('.git', '') };
+
+    return null;
+}
+
 export function getGradeColor(grade: DeveloperScore["grade"]): string {
     const colors: Record<DeveloperScore["grade"], string> = {
         S: "text-yellow-400",

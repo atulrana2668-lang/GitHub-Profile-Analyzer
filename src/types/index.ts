@@ -128,3 +128,61 @@ export type ApiError = {
   message: string;
   code: "NOT_FOUND" | "RATE_LIMITED" | "SERVER_ERROR" | "INVALID_USERNAME";
 };
+
+// ============================================================
+// Code Wiki / Repository Analysis Types
+// ============================================================
+
+export interface RepoFileInfo {
+  path: string;
+  name: string;
+  type: "file" | "dir";
+  language?: string;
+  size?: number;
+}
+
+export interface RepoTechStack {
+  languages: Record<string, number>;
+  frameworks: string[];
+  libraries: string[];
+  tools: string[];
+  primaryLanguage: string;
+}
+
+export interface RepoArchitecture {
+  pattern: string;
+  description: string;
+  layers: string[];
+  mermaidDiagram: string;
+}
+
+export interface RepoDependencyGraph {
+  mermaidGraph: string;
+  dependencies: string[];
+  devDependencies: string[];
+}
+
+export interface RepoComponentFlow {
+  mermaidFlowchart: string;
+  components: string[];
+  entryPoints: string[];
+}
+
+export interface RepoAnalysis {
+  name: string;
+  fullName: string;
+  owner: string;
+  description: string;
+  stars: number;
+  forks: number;
+  language: string | null;
+  topics: string[];
+  defaultBranch: string;
+  techStack: RepoTechStack;
+  architecture: RepoArchitecture;
+  dependencyGraph: RepoDependencyGraph;
+  componentFlow: RepoComponentFlow;
+  fileTree: RepoFileInfo[];
+  readme: string;
+  structureSummary: string;
+}

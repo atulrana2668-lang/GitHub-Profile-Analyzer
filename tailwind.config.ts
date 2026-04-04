@@ -29,12 +29,22 @@ const config: Config = {
       },
       animation: {
         "fade-up": "fadeUp 0.5s ease-out forwards",
+        "fade-in": "fadeIn 0.5s ease-out forwards",
+        "spin-reverse": "spinReverse 1s linear infinite",
         shimmer: "shimmer 1.5s infinite",
       },
       keyframes: {
         fadeUp: {
           from: { opacity: "0", transform: "translateY(16px)" },
           to: { opacity: "1", transform: "translateY(0)" },
+        },
+        fadeIn: {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        spinReverse: {
+          from: { transform: "rotate(360deg)" },
+          to: { transform: "rotate(0deg)" },
         },
         shimmer: {
           from: { backgroundPosition: "-400px 0" },
